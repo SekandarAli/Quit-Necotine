@@ -1,95 +1,99 @@
-import 'package:flutter/widgets.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../database/datbase_helper.dart';
-import '../models/cart_model.dart';
-
 class CartProvider with ChangeNotifier {
-  DBHelper db = DBHelper();
-
-  // For counter badge::
   int _counter = 0;
 
   int get counter => _counter;
 
-  // For calucataing total price of the cart::
   double _totalPrice = 0.0;
 
-  double get total => _totalPrice;
+  double get totalPrice => _totalPrice;
 
-  late Future<List<Cart>> _cart;
+  double _subTotalPrice = 0.0;
 
-  Future<List<Cart>> get cart => _cart;
+  double get subTotalPrice => _subTotalPrice;
 
-//For getting cart list frm the cart::
-  Future<List<Cart>> getData() async {
-    _cart = db.getCartList();
-    return _cart;
-  }
 
-  //Why we use shared prefences here because  for saving data inside the cart while we shutdown the application if items are added in the cart::
 
-  /// set value ::
   void _setPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('cart_item', counter);
-    prefs.setDouble('total_price', _totalPrice);
+    // prefs.setInt('cart_item', _counter);
+    // prefs.setDouble('total_price', _totalPrice);
+    // prefs.setDouble('sub_total_price', _subTotalPrice);
+    // prefs.setDouble('tax', _tax);
+    // prefs.setDouble('cash_discount', _cashDiscount);
+    // prefs.setDouble('tax_percentage', _taxPercentage);
+
     notifyListeners();
   }
 
-//// get value ::
   void _getPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _counter = prefs.getInt('cart_item') ?? 0;
-    _totalPrice = prefs.getDouble('total_price') ?? 0.0;
+    // _counter = prefs.getInt('cart_item') ?? 0;
+    // _totalPrice = prefs.getDouble('total_price') ?? 0.0;
+    // _subTotalPrice = prefs.getDouble('sub_total_price') ?? 0.0;
+    // _tax = prefs.getDouble('tax') ?? 0.0;
+    // _cashDiscount = prefs.getDouble('cash_discount') ?? 0.0;
+    // _taxPercentage = prefs.getDouble('tax_percentage') ?? 0.0;
     notifyListeners();
   }
 
-////For COUNTER::::
-// ADD COUNETER::
+  void addSubTotalPrice(double salePrice) {
+    _subTotalPrice = _subTotalPrice + salePrice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  void removeSubTotalPrice(double salePrice) {
+    _subTotalPrice = _subTotalPrice - salePrice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  void addTotalPrice(double salePrice) {
+    _totalPrice = _totalPrice + salePrice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  void removeTotalPrice(double salePrice) {
+    _totalPrice = _totalPrice - salePrice;
+    _setPrefItems();
+    notifyListeners();
+  }
+
+  double getSubTotalPrice() {
+    _getPrefItems();
+    return _subTotalPrice;
+  }
+
+  double getTotalPrice() {
+    _getPrefItems();
+    return _totalPrice;
+  }
+
 
   void addCounter() {
-    _counter++;
-    _setPrefItems();
-    notifyListeners();
+    if (_counter >= 0) {
+      _counter = _counter + 1;
+      _setPrefItems();
+      notifyListeners();
+    } else {}
   }
 
-  // Remove COUNETER::
-
-  void removeCounter() {
-    _counter--;
-    _setPrefItems();
-    notifyListeners();
+  void removerCounter() {
+    if (_counter > 0) {
+      _counter = _counter - 1;
+      _setPrefItems();
+      notifyListeners();
+    } else {}
   }
-
-  // Get COUNETER::
 
   int getCounter() {
     _getPrefItems();
     return _counter;
   }
 
-  ////For  Total::::
-// ADD Totalprice in  cart::
-
-  void addTotalPrice(double productPrice) {
-    _totalPrice = _totalPrice + productPrice;
-    _setPrefItems();
-    notifyListeners();
-  }
-
-  // Remove TotalPrice from the cart ::
-
-  void removeTotalPrice(double productPrice) {
-    _totalPrice = _totalPrice - productPrice;
-    _setPrefItems();
-    notifyListeners();
-  }
-
-  // Get TotalPrice ::
-
-  double getTotalPrice() {
-    _getPrefItems();
-    return _totalPrice;
-  }
 }

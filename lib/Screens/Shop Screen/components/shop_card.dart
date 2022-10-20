@@ -1,21 +1,41 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:nicotine/Screens/Shop%20Screen/database/datbase_helper.dart';
 import 'package:nicotine/Screens/Shop%20Screen/models/cart_model.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constant.dart';
 import 'package:provider/provider.dart';
 import '../provider/cart_provider.dart';
 
-class ShopCard extends StatelessWidget {
+class ShopCard extends StatefulWidget {
+
   final snap;
 
   ShopCard({required this.snap, Key? key}) : super(key: key);
 
   @override
+  State<ShopCard> createState() => _ShopCardState();
+}
+
+class _ShopCardState extends State<ShopCard> {
+  int quantity = 0;
+
+  void addCart(Cart cart) {
+    final cartBox = Hive.box('cart_model');
+    cartBox.add(cart);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    DBHelper? dbHelper = DBHelper();
+    Cart? cartData;
+    int newquantity;
+
+
     final cart = Provider.of<CartProvider>(context);
     return Container(
       child: Column(
@@ -30,7 +50,7 @@ class ShopCard extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey,
-                  offset: Offset(0.0, 1.0), //(x,y)
+                  offset: Offset(0.0, 1.0),
                   blurRadius: 3.0,
                 ),
               ],
@@ -50,9 +70,9 @@ class ShopCard extends StatelessWidget {
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.network(
-                        "${snap["productImage"].toString()}",
+                        "${widget.snap["productImage"].toString()}",
                         fit: BoxFit.cover,
-                      )),
+                      ),),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -66,36 +86,42 @@ class ShopCard extends StatelessWidget {
                     ),
                     child: InkWell(
                       onTap: () {
-                        print("object");
-                        dbHelper!
-                            .insert(Cart(
-                                id: snap,
-                                productName: snap["title"],
-                                initialPrice: snap["price"],
-                                productPrice: snap["price"],
-                                quantity: 1,
-                                image: snap["productImage"].toString()))
-                            .then((value) {
-                          cart.addTotalPrice(
-                              double.parse(["price"].toString()));
-                          cart.addCounter();
 
-                          final snackBar = SnackBar(
-                            backgroundColor: Colors.green,
-                            content: Text('Product is added to cart'),
-                            duration: Duration(seconds: 1),
+                        if (quantity == 0) {
+                          print(".............insert function start............");
+                          newquantity = quantity + 1;
+
+                          cartData = Cart(
+                            id: widget.snap.toString(),
+                            productName: widget.snap["title"].toString(),
+                            initialPrice: double.parse(widget.snap["price"]),
+                            productPrice: widget.snap["price"].toString(),
+                            quantity: newquantity,
+                            image: widget.snap["productImage"].toString(),
+
                           );
+                          addCart(cartData!);
+                          cart.addCounter();
+                          print("aaaaa${cart.counter}");
 
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }).onError((error, stackTrace) {
-                          print("error" + error.toString());
-                          final snackBar = SnackBar(
-                              backgroundColor: Colors.red,
-                              content: Text('Product is already added in cart'),
-                              duration: Duration(seconds: 1));
+                          setState(() {
+                            quantity = cartData!.quantity!;
+                          });
 
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        });
+                          print("quantityyyyyy$quantity");
+
+                          ///ADD TOTAL AMOUNT
+                          cart.addTotalPrice(double.parse(widget.snap["price"]));
+
+                          print(".............insert function end............");
+
+                          var snackBar = SnackBar(content:
+                          Text('Item has been Added to Cart Successfuly'),
+                            backgroundColor: Colors.green.shade700,
+                           duration: Duration(milliseconds: 100),);
+
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
                       },
                       child: Icon(
                         Icons.shopping_cart_rounded,
@@ -111,8 +137,7 @@ class ShopCard extends StatelessWidget {
           Container(
             width: 80.w,
             child: Text(
-              snap["title"].toString(),
-              // "120-day Quit Nicotine 4 Life Programme"
+              widget.snap["title"].toString(),
 
               style: TextStyle(
                   color: Colors.black,
@@ -124,7 +149,7 @@ class ShopCard extends StatelessWidget {
           Container(
             width: 80.w,
             child: Text(
-              "£ ${snap["price"].toString()}",
+              "£ ${widget.snap["price"].toString()}",
               // "£120.00",
               style: TextStyle(
                   color: kSigninColor,

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nicotine/Constant.dart';
 import 'package:nicotine/Screens/auth_screens/signup_screen.dart';
+import 'package:nicotine/admin_side/admin_login.dart';
 import 'package:nicotine/blocs/User/user_bloc.dart';
 import 'package:sizer/sizer.dart';
 
@@ -306,6 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => SignupScreen()));
+                      // MaterialPageRoute(builder: (context) => AdminLoginScreen()));
                 },
                 child: RichText(
                   text: TextSpan(

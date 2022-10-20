@@ -1,11 +1,16 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nicotine/Screens/Components/backButton.dart';
 import 'package:nicotine/Screens/Shop%20Screen/cart_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'components/shop_card.dart';
+import 'provider/cart_provider.dart';
+
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({Key? key}) : super(key: key);
@@ -15,8 +20,12 @@ class ShopScreen extends StatefulWidget {
 }
 
 class _ShopScreenState extends State<ShopScreen> {
+
   @override
   Widget build(BuildContext context) {
+
+    var cart = Provider.of<CartProvider>(context);
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -33,7 +42,8 @@ class _ShopScreenState extends State<ShopScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CartScreen(),
+                    // builder: (context) =>  CartScreen(),
+                    builder: (context) =>  CartNewScreen(),
                   ),
                 );
               },
@@ -44,6 +54,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     color: Colors.black,
                   ),
                   badgeContent: Text(
+                    // cart.getCounter().toString(),
                     "0",
                     style: TextStyle(color: Colors.white),
                   ),

@@ -1,37 +1,51 @@
-class Cart {
-  late final int? id;
+import 'package:hive/hive.dart';
 
-  final productName;
-  final int? productPrice;
-  final int? quantity;
-  final String? image;
-  final String? initialPrice;
+part 'cart_model.g.dart';
+
+@HiveType(typeId: 1)
+class Cart extends HiveObject{
+  @HiveField(0)
+  String? id;
+  @HiveField(1)
+  String? productPrice;
+  @HiveField(2)
+  String? productName;
+  @HiveField(3)
+  String? image;
+  @HiveField(4)
+  double? initialPrice;
+  @HiveField(5)
+  int? quantity;
 
   Cart({
-    required this.id,
-    required this.productPrice,
-    required this.productName,
-    required this.quantity,
-    required this.image,
-    required this.initialPrice,
+    this.id,
+    this.productPrice,
+    this.productName,
+    this.image,
+    this.initialPrice,
+    this.quantity,
   });
 
-  Cart.fromMap(Map<dynamic, dynamic> res)
-      : id = res["id"],
-        productPrice = res["productPrice"],
-        productName = res["productName"],
-        quantity = res["quantity"],
-        image = res["image"],
-        initialPrice = res["initialPrice"];
-
-  Map<String, Object?> toMap() {
+  Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "productPrice": productPrice,
-      "productName": productName,
-      "quantity": quantity,
-      "image": image,
-      "initialPrice": initialPrice,
+      'id': id,
+      'productPrice': productPrice,
+      'productName': productName,
+      'image': image,
+      'initialPrice': initialPrice,
+      'quantity': quantity,
     };
   }
+
+  factory Cart.fromMap(Map<String, dynamic> map) {
+    return Cart(
+      id: map['id'] as String,
+      productPrice: map['productPrice'] as String,
+      productName: map['productName'] as String,
+      image: map['image'] as String,
+      initialPrice: map['initialPrice'] as double,
+      quantity: map['quantity'] as int,
+    );
+  }
 }
+
