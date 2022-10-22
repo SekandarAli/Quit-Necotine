@@ -3,7 +3,7 @@ part of 'user_bloc.dart';
 @immutable
 abstract class UserState {}
 
-class UserInitial extends UserState {}
+class UserInitialNew extends UserState {}
 
 class UserLoading extends UserState {}
 
@@ -21,6 +21,14 @@ class UserLoggedIn extends UserState {
 
 
 }
+
+// class UserInitial extends UserState {
+//   final User user;
+//
+//   UserInitial({required this.user});
+//
+//
+// }
 
 class LogInError extends UserState {
   final String error;

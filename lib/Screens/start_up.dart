@@ -22,7 +22,7 @@ class _StartUpState extends State<StartUp> {
     return Scaffold(
       body: BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if (state is UserInitial) {
+            if (state is UserInitialNew) {
               Timer(const Duration(milliseconds: 3000), () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => const LoginScreen()));

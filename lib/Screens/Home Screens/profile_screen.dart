@@ -797,7 +797,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           : null,
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
-          if (state is UserInitial) {
+          if (state is UserInitialNew) {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => LoginScreen()));
           }

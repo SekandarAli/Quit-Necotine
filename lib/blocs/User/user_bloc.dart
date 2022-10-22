@@ -10,7 +10,7 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserInitial());
+  UserBloc() : super(UserInitialNew());
   final onBoardingFirestoreService = OnBoardingFirestoreService();
 
   @override
@@ -18,7 +18,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       UserEvent event,
       ) async* {
     if (event is InitialStatePush) {
-      yield UserInitial();
+      yield UserInitialNew();
     } else if (event is CheckIfLoggedIn) {
       yield UserSplashScreen();
       try {
@@ -26,7 +26,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         if (Storage.getValue("userId") == null ||
             Storage.getValue("userId") == "null") {
           print('Not Logged In, key not found');
-          yield UserInitial();
+          yield UserInitialNew();
         } else {
           print('pref key found');
           final userId = Storage.getValue("userId");
@@ -39,7 +39,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } catch (e) {
         print('Error');
         print(e.toString());
-        yield UserInitial();
+        yield UserInitialNew();
       }
     } else if (event is GoogleLogin) {
       yield UserLoading();
@@ -198,7 +198,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } else if (event is Logout) {
       print("UserBloc: Logout event");
       Storage.setValue('userId', 'null');
-      yield UserInitial();
+      yield UserInitialNew();
     }
   }
 }

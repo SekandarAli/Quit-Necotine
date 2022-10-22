@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nicotine/Screens/Components/backButton.dart';
+import 'package:nicotine/Screens/Home%20Screens/dash_bord.dart';
 
 import 'package:nicotine/blocs/Goal/goal_bloc.dart';
 import 'package:nicotine/utils/date_util.dart';
@@ -27,6 +28,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   TextEditingController dateController = TextEditingController();
   DateTime addedDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
+
   String? selectedValue;
   List<String> items = [
     '120 Days',
@@ -40,9 +42,11 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     super.initState();
   }
 
+  var userState;
+
+
   @override
   Widget build(BuildContext context) {
-    var userState;
     return BlocProvider(
       create: (context) => UserBloc()..add(CheckIfLoggedIn()),
       child: Scaffold(
@@ -340,7 +344,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                             borderRadius: BorderRadius.circular(10),
                           )),
                         ),
-                        onPressed: () {
+                        onPressed: () async{
                           if (_formKey.currentState!.validate()) {
                             print("First Time");
                             // if (dateController.text.isNotEmpty ||
@@ -348,20 +352,29 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                             //     selectedValue != null
                             //
                             // ) {
-                            userState =
-                                BlocProvider.of<UserBloc>(context).state;
-                            print(userState);
+                            userState = BlocProvider.of<UserBloc>(context).state;
+                            // userState = UserLoggedIn(user: userState);
+                            print("aaa${userState}");
                             print("second time ");
 
+                            // if (userState is UserLoggedIn) {
+                            // if (userState is UserInitail) {
                             if (userState is UserLoggedIn) {
-                              print(userState);
-                              BlocProvider.of<GoalBloc>(context).add(AddGoal(
+                              print("aaa${userState}");
+                               BlocProvider.of<GoalBloc>(context).add(AddGoal(
                                 user: userState.user,
                                 goalName: goal_name_1.text,
                                 goalDays: getDaysInInt(selectedValue!),
                                 goalDate: addedDate,
                               ));
+
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DashBord(),
+                                  ));
                             }
+                          // } else {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 showSnackbar("Please enter all the details"));

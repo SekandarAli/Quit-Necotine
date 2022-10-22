@@ -123,7 +123,7 @@ class _DashBordState extends State<DashBord>
           ),
           backgroundColor: Colors.white,
           title: Text(
-            "Monitor Your Activity",
+            "Monitor Your Activity ",
             style: TextStyle(fontSize: 16.sp, color: Colors.black),
           ),
         ),
